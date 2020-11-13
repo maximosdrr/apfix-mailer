@@ -1,0 +1,702 @@
+
+  <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pendencias</title>
+  </head>
+  <style>
+    body {
+      background-color: #f3f3f3;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    table {
+      width: 750px;
+      border-collapse: collapse;
+      margin: 50px auto;
+    }
+    table tbody :hover {
+      background-color: rgb(18, 118, 211);
+      cursor: pointer;
+      color: #f3f3f3;
+    }
+
+    /* Zebra striping */
+    tr:nth-of-type(odd) {
+      background: #eee;
+    }
+
+    th {
+      background: #3498db;
+      color: white;
+      font-weight: bold;
+    }
+
+    td,
+    th {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+      font-size: 18px;
+    }
+
+    @media only screen and (max-width: 760px),
+      (min-device-width: 768px) and (max-device-width: 1024px) {
+      table {
+        width: 100%;
+      }
+
+      /* Force table to not be like tables anymore */
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      /* Hide table headers (but not display: none;, for accessibility) */
+      thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      tr {
+        border: 1px solid #ccc;
+      }
+
+      td {
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+      }
+
+      td:before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        /* Label the data */
+        content: attr(data-column);
+
+        color: #000;
+        font-weight: bold;
+      }
+    }
+    #logo {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    #logo img {
+      max-width: 400px;
+      max-height: 200px;
+      width: 250px;
+      height: 100px;
+    }
+
+    #logo h5 {
+      margin: 0px;
+      margin-top: 15px;
+    }
+
+    #bottom {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      align-items: center;
+      margin-bottom: 30px;
+      margin-top: 20px;
+    }
+
+    #bottom h5 {
+      margin-left: 30px;
+      margin-right: 30px;
+      text-align: center;
+    }
+
+    #bottom a {
+      text-decoration: none;
+      color: rgb(11, 75, 172);
+      font-family: Arial, sans-serif;
+    }
+    /* MODAL */
+    /* The Modal (background) */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0, 0, 0); /* Fallback color */
+      background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content/Box */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto; /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+      animation-name: animatetop;
+      animation-duration: 0.4s;
+    }
+
+    /* The Close Button */
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    /* Add Animation */
+    @keyframes animatetop {
+      from {
+        top: -300px;
+        opacity: 0;
+      }
+      to {
+        top: 0;
+        opacity: 1;
+      }
+    }
+
+    .modal-content label {
+      font-weight: bold;
+    }
+
+    .modal-content p {
+      margin: 0px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+
+    .modal-content {
+      padding: 20px;
+    }
+  </style>
+
+  <body>
+    <div id="logo">
+      <img
+        src="https://i.ibb.co/LZshZ7v/35ea79f3-7533-46b5-8bba-4fdd299f23df.jpg"
+      />
+      <h5>Data da Geração: 13/11/2020</h5>
+    </div>
+    <div id="content">
+      <table>
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Pendencia</th>
+            <th>Valor Estimado</th>
+            <th>Ultima Realização</th>
+            <th>Proxima Realização</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </div>
+    <div id="bottom">
+      <h5>
+        *Clique em alguma linha da tabela para exibir os detalhes da pendencia*
+      </h5>
+      <a href="http://www.apfix.com.br" target="_blank">Acessar o Apfix</a>
+    </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>
+          <label>STATUS:</label>
+          <span id="modal-content-status">?</span>
+        </h3>
+        <p>
+          <label>Pendencia:</label>
+          <span id="modal-content-name">?</span>
+        </p>
+        <p>
+          <label>Periodo:</label>
+          <span id="modal-content-period">a cada ?</span>
+        </p>
+        <p>
+          <label>Proxima Realização:</label>
+          <span id="modal-content-next-time">?</span>
+        </p>
+        <p>
+          <label>Ultima Realização:</label>
+          <span id="modal-content-last-time">?</span>
+        </p>
+        <p>
+          <label>Valor Estimado:</label> R$
+          <span id="modal-content-estimated-value">?</span>
+        </p>
+        <p>
+          <label>Valor da Ultima Realização:</label> R$
+          <span id="modal-content-value">?</span>
+        </p>
+        <p>
+          <label>Empresa Responsavel:</label>
+          <span id="modal-content-responsible">?</span>
+        </p>
+      </div>
+    </div>
+  </body>
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    const openModal = (
+      status,
+      name,
+      period,
+      nextTime,
+      lastTime,
+      estimatedValue,
+      value,
+      responsible
+    ) => {
+      document.getElementById("modal-content-status").innerHTML = status || "?";
+      document.getElementById("modal-content-name").innerHTML = name || "?";
+      document.getElementById("modal-content-period").innerHTML =
+        period || "?";
+      document.getElementById("modal-content-next-time").innerHTML =
+        nextTime || "?";
+      document.getElementById("modal-content-last-time").innerHTML =
+        lastTime || "?";
+      document.getElementById("modal-content-estimated-value").innerHTML =
+        estimatedValue || "?";
+      document.getElementById("modal-content-value").innerHTML = value || "?";
+      document.getElementById("modal-content-responsible").innerHTML =
+        responsible || "?";
+      modal.style.display = "block";
+    };
+    // When the user clicks on the button, open the modal
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+      modal.style.display = "none";
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+  </script>
+</html>
+
+  Caixa Dágua - Troca da tampa</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('REALIZADO',
+       'Atestado - Sistema De Proteção Contra Descargas Atmosféricas',
+        '1 ano',
+         '30/8/2020 - 21:00',
+          '2/9/2020 - 21:00', 
+          '0',
+           '500', 
+           'nxp')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">ATESTADO - SISTEMA DE PROTEÇÃO CONTRA DESCARGAS ATMOSFÉRICAS</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">2/9/2020 - 21:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">REALIZADO</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Mangueiras De Incêncio - Teste Hidrostático',
+        '1 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">MANGUEIRAS DE INCÊNCIO - Teste hidrostático</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Gás Embutido - Troca De Regulador',
+        '1 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '600',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">Gás embutido - Troca de regulador</td>
+            <td data-column="Valor Estimado">600</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Tubulação De Gás – Teste De Estanqueidade',
+        '5 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">TUBULAÇÃO DE GÁS – TESTE DE ESTANQUEIDADE</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Extintores – Teste Dos Cilindros',
+        '5 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">EXTINTORES – TESTE DOS CILINDROS</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Extintores – Recarga',
+        '1 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">EXTINTORES – RECARGA</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Porta Corta-fogo',
+        '6 mes',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">PORTA CORTA-FOGO</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Iluminação De Emergência - Verificar Fusíveis E Baterias',
+        '2 mes',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Avcb</td>
+            <td data-column="Pendencia">Iluminação de Emergência - Verificar Fusíveis e Baterias</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Elevador - Inspeção Pela Empresa Responsável Pela Instalação',
+        '1 mes',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Elevadores</td>
+            <td data-column="Pendencia">ELEVADOR - Inspeção pela empresa responsável pela instalação</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Fachada - Revisão Na Pintura',
+        '5 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Fachada</td>
+            <td data-column="Pendencia">Fachada - Revisão na pintura</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Fachada – Lavagem E Verificação Dos Elementos – Rejuntes E Juntas',
+        '5 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Fachada</td>
+            <td data-column="Pendencia">FACHADA – LAVAGEM E VERIFICAÇÃO DOS ELEMENTOS – REJUNTES E JUNTAS</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Hidráulica - Limpeza Da Caixa De Gordura',
+        '1 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Hidraulica</td>
+            <td data-column="Pendencia">Hidráulica - Limpeza da caixa de gordura</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Hidráulica - Limpeza Dos Dutos E Encanamentos',
+        '1 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Hidraulica</td>
+            <td data-column="Pendencia">Hidráulica - limpeza dos dutos e encanamentos</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       'Esgoto - Limpeza Do Poço De Esgoto Poço De áGua Servida Caixas De Drenagem E Esgoto',
+        '1 ano',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Esgoto</td>
+            <td data-column="Pendencia">Esgoto - Limpeza do poço de esgoto poço de água servida caixas de drenagem e esgoto</td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+    <tr
+      onclick="openModal('PENDENTE',
+       '',
+        ' ',
+         '30/8/2020 - 21:00',
+          '--/--/-- - 00:00', 
+          '0',
+           '0', 
+           '')"
+          >
+            <td data-column="Categoria">Esgoto</td>
+            <td data-column="Pendencia"></td>
+            <td data-column="Valor Estimado">0</td>
+            <td data-column="Ultima Realização">--/--/-- - 00:00</td>
+            <td data-column="Proxima Realização">30/8/2020 - 21:00</td>
+            <td data-column="Status">PENDENTE</td>
+          </tr>
+    
+        </tbody>
+      </table>
+    </div>
+    <div id="bottom">
+      <h5>
+        *Clique em alguma linha da tabela para exibir os detalhes da pendencia*
+      </h5>
+      <a href="http://www.apfix.com.br" target="_blank">Acessar o Apfix</a>
+    </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>
+          <label>STATUS:</label>
+          <span id="modal-content-status">?</span>
+        </h3>
+        <p>
+          <label>Pendencia:</label>
+          <span id="modal-content-name">?</span>
+        </p>
+        <p>
+          <label>Periodo:</label>
+          <span id="modal-content-period">a cada ?</span>
+        </p>
+        <p>
+          <label>Proxima Realização:</label>
+          <span id="modal-content-next-time">?</span>
+        </p>
+        <p>
+          <label>Ultima Realização:</label>
+          <span id="modal-content-last-time">?</span>
+        </p>
+        <p>
+          <label>Valor Estimado:</label> R$
+          <span id="modal-content-estimated-value">?</span>
+        </p>
+        <p>
+          <label>Valor da Ultima Realização:</label> R$
+          <span id="modal-content-value">?</span>
+        </p>
+        <p>
+          <label>Empresa Responsavel:</label>
+          <span id="modal-content-responsible">?</span>
+        </p>
+      </div>
+    </div>
+  </body>
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    const openModal = (
+      status,
+      name,
+      period,
+      nextTime,
+      lastTime,
+      estimatedValue,
+      value,
+      responsible
+    ) => {
+      document.getElementById("modal-content-status").innerHTML = status || "?";
+      document.getElementById("modal-content-name").innerHTML = name || "?";
+      document.getElementById("modal-content-period").innerHTML =
+        period || "?";
+      document.getElementById("modal-content-next-time").innerHTML =
+        nextTime || "?";
+      document.getElementById("modal-content-last-time").innerHTML =
+        lastTime || "?";
+      document.getElementById("modal-content-estimated-value").innerHTML =
+        estimatedValue || "?";
+      document.getElementById("modal-content-value").innerHTML = value || "?";
+      document.getElementById("modal-content-responsible").innerHTML =
+        responsible || "?";
+      modal.style.display = "block";
+    };
+    // When the user clicks on the button, open the modal
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+      modal.style.display = "none";
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+  </script>
+</html>
+
+  
