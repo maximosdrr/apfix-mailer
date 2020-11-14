@@ -37,7 +37,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bootstrap = void 0;
-var constants_1 = require("./constants");
 var Bootstrap = /** @class */ (function () {
     function Bootstrap(factory, mailerService) {
         this.factory = factory;
@@ -59,8 +58,10 @@ var Bootstrap = /** @class */ (function () {
                         return [4 /*yield*/, this.sendMails()];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, this.sleep(60 * 60 * constants_1.TIME)];
+                        // await this.sleep(60 * 60 * TIME);
+                        return [4 /*yield*/, this.sleep(10)];
                     case 3:
+                        // await this.sleep(60 * 60 * TIME);
                         _a.sent();
                         return [3 /*break*/, 1];
                     case 4: return [2 /*return*/];
@@ -82,7 +83,7 @@ var Bootstrap = /** @class */ (function () {
                         _i = 0;
                         _c.label = 2;
                     case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 9];
+                        if (!(_i < _a.length)) return [3 /*break*/, 10];
                         i = _a[_i];
                         if (!(condominiums[i].email != "" && condominiums[i].email != null)) return [3 /*break*/, 6];
                         return [4 /*yield*/, this.factory.createMailerObject(condominiums[i]._id || "")];
@@ -98,13 +99,14 @@ var Bootstrap = /** @class */ (function () {
                     case 6:
                         console.log(condominiums[i]._id + " n\u00E3o possuia email, portanto n\u00E3o pode ser enviado");
                         _c.label = 7;
-                    case 7:
-                        this.sleep(20);
-                        _c.label = 8;
+                    case 7: return [4 /*yield*/, this.sleep(20)];
                     case 8:
+                        _c.sent();
+                        _c.label = 9;
+                    case 9:
                         _i++;
                         return [3 /*break*/, 2];
-                    case 9: return [2 /*return*/];
+                    case 10: return [2 /*return*/];
                 }
             });
         });

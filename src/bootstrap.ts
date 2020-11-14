@@ -35,7 +35,7 @@ export class Bootstrap {
           `${condominiums[i]._id} não possuia email, portanto não pode ser enviado`
         );
       }
-      this.sleep(20);
+      await this.sleep(20);
     }
   }
 }
