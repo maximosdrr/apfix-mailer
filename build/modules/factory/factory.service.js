@@ -104,39 +104,6 @@ var Factory = /** @class */ (function () {
             });
         });
     };
-    Factory.prototype.createMailerList = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var condominiums, mailerObjects, _a, _b, _i, i, id, mailerObject;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0: return [4 /*yield*/, this.condominiumService.findAll()];
-                    case 1:
-                        condominiums = _c.sent();
-                        mailerObjects = [];
-                        _a = [];
-                        for (_b in condominiums)
-                            _a.push(_b);
-                        _i = 0;
-                        _c.label = 2;
-                    case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 5];
-                        i = _a[_i];
-                        id = condominiums[i]._id;
-                        return [4 /*yield*/, this.createMailerObject(id || "")];
-                    case 3:
-                        mailerObject = _c.sent();
-                        mailerObjects.push(mailerObject);
-                        _c.label = 4;
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5:
-                        console.log(mailerObjects);
-                        return [2 /*return*/, mailerObjects];
-                }
-            });
-        });
-    };
     Factory.prototype.getCondominiuns = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

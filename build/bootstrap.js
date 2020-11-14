@@ -37,15 +37,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bootstrap = void 0;
+var constants_1 = require("./constants");
+var anex_generator_1 = require("./helpers/anex-generator");
+var sleep_1 = require("./helpers/sleep");
 var Bootstrap = /** @class */ (function () {
     function Bootstrap(factory, mailerService) {
         this.factory = factory;
         this.mailerService = mailerService;
         console.log("[BOOTSTRAP]: Initialized");
     }
-    Bootstrap.prototype.sleep = function (ms) {
-        return new Promise(function (resolve) { return setTimeout(resolve, ms * 1000); });
-    };
     Bootstrap.prototype.startApplication = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -55,13 +55,12 @@ var Bootstrap = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         if (!true) return [3 /*break*/, 4];
+                        console.log("A aplica\u00E7\u00E3o vai enviar os emails agora, " + 60 * 60 * constants_1.TIME + " minutos se passaram");
                         return [4 /*yield*/, this.sendMails()];
                     case 2:
                         _a.sent();
-                        // await this.sleep(60 * 60 * TIME);
-                        return [4 /*yield*/, this.sleep(10)];
+                        return [4 /*yield*/, sleep_1.sleep(60 * 60 * constants_1.TIME)];
                     case 3:
-                        // await this.sleep(60 * 60 * TIME);
                         _a.sent();
                         return [3 /*break*/, 1];
                     case 4: return [2 /*return*/];
@@ -83,30 +82,33 @@ var Bootstrap = /** @class */ (function () {
                         _i = 0;
                         _c.label = 2;
                     case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 10];
+                        if (!(_i < _a.length)) return [3 /*break*/, 11];
                         i = _a[_i];
-                        if (!(condominiums[i].email != "" && condominiums[i].email != null)) return [3 /*break*/, 6];
+                        if (!(condominiums[i].email != "" && condominiums[i].email != null)) return [3 /*break*/, 9];
                         return [4 /*yield*/, this.factory.createMailerObject(condominiums[i]._id || "")];
                     case 3:
                         mailerObject = _c.sent();
-                        return [4 /*yield*/, this.mailerService.generateAnex(mailerObject)];
-                    case 4:
-                        _c.sent();
-                        return [4 /*yield*/, this.mailerService.send(condominiums[i].email)];
+                        if (!(mailerObject.length == 0)) return [3 /*break*/, 4];
+                        console.log(condominiums[i].email + " \n            n\u00E3o possuia pendencias, portanto o email n\u00E3o vai ser enviado");
+                        return [3 /*break*/, 8];
+                    case 4: return [4 /*yield*/, anex_generator_1.generateOutputs(mailerObject)];
                     case 5:
                         _c.sent();
-                        return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.mailerService.send(condominiums[i].email)];
                     case 6:
-                        console.log(condominiums[i]._id + " n\u00E3o possuia email, portanto n\u00E3o pode ser enviado");
-                        _c.label = 7;
-                    case 7: return [4 /*yield*/, this.sleep(20)];
-                    case 8:
                         _c.sent();
-                        _c.label = 9;
+                        return [4 /*yield*/, sleep_1.sleep(constants_1.EMAIL_DELAY)];
+                    case 7:
+                        _c.sent();
+                        _c.label = 8;
+                    case 8: return [3 /*break*/, 10];
                     case 9:
+                        console.log(condominiums[i]._id + " n\u00E3o possuia email, portanto o email n\u00E3o pode ser enviado");
+                        _c.label = 10;
+                    case 10:
                         _i++;
                         return [3 /*break*/, 2];
-                    case 10: return [2 /*return*/];
+                    case 11: return [2 /*return*/];
                 }
             });
         });

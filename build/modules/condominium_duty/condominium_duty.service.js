@@ -83,7 +83,7 @@ var CondominiumDutyService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.db
                             .collection("condominio_obrigacoes")
-                            .find({ id_condominio: new mongodb_1.ObjectID(condominium) })
+                            .find({ id_condominio: new mongodb_1.ObjectID(condominium), status: "PENDENTE" })
                             .toArray()];
                     case 1:
                         result = _a.sent();

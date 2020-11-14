@@ -1,4 +1,42 @@
+import { IMailerObject } from "../models/mailerObject";
+import { filterSpecialCharacters } from "./filter-special-characters";
+import { formatDate } from "./format-date";
+import { stringToTitle } from "./text-to-title";
 
+export const generateHtml = (mailerObject: IMailerObject[]) => {
+  let dutys = "";
+  for (const i in mailerObject) {
+    const currentMailerObject = filterSpecialCharacters(mailerObject[i]);
+
+    dutys += `
+    <tr
+      onclick="openModal('${currentMailerObject.status}',
+       '${stringToTitle(currentMailerObject.name)}',
+        '${currentMailerObject.period}',
+         '${formatDate(currentMailerObject.nextTime)}',
+          '${formatDate(currentMailerObject.lastTime)}', 
+          '${currentMailerObject.estimatedValue}',
+           '${currentMailerObject.value}', 
+           '${currentMailerObject.responsible}')"
+          >
+            <td data-column="Categoria">${stringToTitle(
+              currentMailerObject.category
+            )}</td>
+            <td data-column="Pendencia">${currentMailerObject.name}</td>
+            <td data-column="Valor Estimado">${
+              currentMailerObject.estimatedValue
+            }</td>
+            <td data-column="Ultima Realização">${formatDate(
+              currentMailerObject.lastTime
+            )}</td>
+            <td data-column="Proxima Realização">${formatDate(
+              currentMailerObject.nextTime
+            )}</td>
+            <td data-column="Status">${currentMailerObject.status}</td>
+          </tr>
+    `;
+  }
+  return `
   <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -221,7 +259,7 @@
           </tr>
         </thead>
         <tbody>
-          
+          ${dutys}
         </tbody>
       </table>
     </div>
@@ -322,4 +360,5 @@
   </script>
 </html>
 
-  
+  `;
+};

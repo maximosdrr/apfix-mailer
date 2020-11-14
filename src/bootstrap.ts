@@ -1,7 +1,8 @@
-import { TIME } from "./constants";
+import { EMAIL_DELAY, TIME } from "./constants";
+import { generateOutputs } from "./helpers/anex-generator";
+import { sleep } from "./helpers/sleep";
 import { IMailerObject } from "./models/mailerObject";
 import { Factory } from "./modules/factory/factory.service";
-import { generateHtml } from "./modules/mailer/html_generator";
 import { MailerService } from "./modules/mailer/mailer.service";
 
 export class Bootstrap {
@@ -9,15 +10,21 @@ export class Bootstrap {
     console.log("[BOOTSTRAP]: Initialized");
   }
 
-  sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms * 1000));
-  }
-
   async startApplication() {
     console.log("[BOOTSTRAP]: Now running the Application");
     while (true) {
+      console.log(
+        `[BOOTSTRAP]: A aplicação vai enviar os emails agora, ${
+          60 * 60 * TIME
+        } segundos se passaram`
+      );
       await this.sendMails();
-      await this.sleep(60 * 60 * TIME);
+      console.log(
+        `[BOOTSTRAP]: A aplicação rodará novamente em ${
+          60 * 60 * TIME
+        } segundos`
+      );
+      await sleep(60 * 60 * TIME);
     }
   }
 
@@ -25,17 +32,24 @@ export class Bootstrap {
     const condominiums = await this.factory.getCondominiuns();
     for (const i in condominiums) {
       if (condominiums[i].email != "" && condominiums[i].email != null) {
-        const mailerObject: IMailerObject = await this.factory.createMailerObject(
+        const mailerObject: IMailerObject[] = await this.factory.createMailerObject(
           condominiums[i]._id || ""
         );
-        await this.mailerService.generateAnex(mailerObject);
-        await this.mailerService.send(condominiums[i].email);
+        if (mailerObject.length == 0) {
+          console.log(
+            `${condominiums[i].email} 
+            [BOOTSTRAP]: não possuia pendencias, portanto o email não vai ser enviado`
+          );
+        } else {
+          await generateOutputs(mailerObject);
+          await this.mailerService.send(condominiums[i].email);
+          await sleep(EMAIL_DELAY);
+        }
       } else {
         console.log(
-          `${condominiums[i]._id} não possuia email, portanto não pode ser enviado`
+          `[BOOTSTRAP]: ${condominiums[i]._id} não possuia email, portanto o email não pode ser enviado`
         );
       }
-      await this.sleep(20);
     }
   }
 }

@@ -35,55 +35,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MailerService = void 0;
-var constants_1 = require("../../constants");
-var write_erro_1 = require("../write_error/write_erro");
-var nodemailer = require("nodemailer");
-var MailerService = /** @class */ (function () {
-    function MailerService() {
-    }
-    MailerService.prototype.send = function (to) {
-        return __awaiter(this, void 0, void 0, function () {
-            var transporter, mailOptions;
-            return __generator(this, function (_a) {
-                transporter = nodemailer.createTransport({
-                    service: "gmail",
-                    auth: {
-                        user: constants_1.NODE_MAILER_CREDENTIALS.user,
-                        pass: constants_1.NODE_MAILER_CREDENTIALS.pass,
-                    },
-                });
-                mailOptions = {
-                    from: constants_1.EMAIL.from,
-                    to: to,
-                    subject: constants_1.EMAIL.subject,
-                    text: constants_1.EMAIL.text,
-                    html: constants_1.EMAIL.html,
-                    attachments: [
-                        {
-                            filename: "pendencias.html",
-                            path: "output/pendencias.html",
-                        },
-                        {
-                            filename: "pendencias.pdf",
-                            path: "output/pendencias.pdf",
-                        },
-                    ],
-                };
-                transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                        console.log("Um erro ocorreu ao tentar enviar o email");
-                        write_erro_1.WriteError(error, "mail_error_log.txt");
-                    }
-                    else {
-                        console.log("Email sent: " + to);
-                    }
-                });
-                return [2 /*return*/];
-            });
+exports.generateOutputs = void 0;
+var html_generator_1 = require("./html-generator");
+var pdf_generator_1 = require("./pdf-generator");
+var fs_1 = __importDefault(require("fs"));
+exports.generateOutputs = function (mailerObject) { return __awaiter(void 0, void 0, void 0, function () {
+    var fileName, stream;
+    return __generator(this, function (_a) {
+        pdf_generator_1.generatePDF(mailerObject);
+        fileName = "output/pendencias.html";
+        stream = fs_1.default.createWriteStream(fileName);
+        stream.once("open", function (fd) {
+            var html = html_generator_1.generateHtml(mailerObject);
+            stream.end(html);
         });
-    };
-    return MailerService;
-}());
-exports.MailerService = MailerService;
+        return [2 /*return*/];
+    });
+}); };

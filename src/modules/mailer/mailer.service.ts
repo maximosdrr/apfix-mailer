@@ -1,8 +1,8 @@
 import { EMAIL, NODE_MAILER_CREDENTIALS } from "../../constants";
-import { generateHtml } from "./html_generator";
+import { WriteError } from "../../helpers/write_error";
+import appRoot from "app-root-path";
 
 var nodemailer = require("nodemailer");
-var fs = require("fs");
 
 export class MailerService {
   async send(to: string) {
@@ -23,35 +23,22 @@ export class MailerService {
       attachments: [
         {
           filename: "pendencias.html",
-          path: __dirname + "/output.html",
+          path: appRoot.path + "/output/pendencias.html",
+        },
+        {
+          filename: "pendencias.pdf",
+          path: appRoot.path + "/output/pendencias.pdf",
         },
       ],
     };
 
     transporter.sendMail(mailOptions, function (error: any, info: any) {
       if (error) {
-        throw error;
+        console.log("Um erro ocorreu ao tentar enviar o email");
+        WriteError(error, appRoot.path + "/logs/error_log.txt");
       } else {
-        console.log("Email sent: " + info.response);
+        console.log("Email sent: " + to);
       }
-    });
-  }
-
-  async generateAnex(mailerObject: any) {
-    var fileName = __dirname + "/output.html";
-    var stream = fs.createWriteStream(fileName);
-
-    stream.once("open", function (fd: any) {
-      var html = generateHtml(mailerObject);
-
-      stream.end(html);
-    });
-  }
-
-  async deleteAnex() {
-    var fileName = __dirname + "/output.html";
-    await fs.unlink(fileName, (err: any) => {
-      if (err) throw err;
     });
   }
 }

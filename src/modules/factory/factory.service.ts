@@ -14,8 +14,8 @@ export class Factory {
   ) {
     console.log("[SERVICE]: Factory Initialized");
   }
-  async createMailerObject(condominiumId: string): Promise<IMailerObject> {
-    const mailerObject: any = [];
+  async createMailerObject(condominiumId: string): Promise<IMailerObject[]> {
+    const mailerObject: IMailerObject[] = [];
 
     const condominiumDutys = await this.condominiumDutyService.findByCondominium(
       condominiumId
@@ -57,19 +57,6 @@ export class Factory {
       mailerObject.push(rest);
     }
     return mailerObject;
-  }
-
-  async createMailerList(): Promise<IMailerObject[]> {
-    const condominiums = await this.condominiumService.findAll();
-    const mailerObjects: IMailerObject[] = [];
-    for (const i in condominiums) {
-      const id = condominiums[i]._id;
-      const mailerObject = await this.createMailerObject(id || "");
-      mailerObjects.push(mailerObject);
-    }
-
-    console.log(mailerObjects);
-    return mailerObjects;
   }
 
   async getCondominiuns(): Promise<ICondominium[]> {

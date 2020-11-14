@@ -27,7 +27,7 @@ export class CondominiumDutyService {
   async findByCondominium(condominium: string): Promise<ICondominiumDuty[]> {
     const result = await this.db
       .collection("condominio_obrigacoes")
-      .find({ id_condominio: new ObjectID(condominium) })
+      .find({ id_condominio: new ObjectID(condominium), status: "PENDENTE" })
       .toArray();
     return result;
   }

@@ -1,4 +1,5 @@
-export const TIME = 30; //INTERVALO EM HORAS DO ENVIO DOS EMAILS
+export const TIME = 168; //INTERVALO EM HORAS DO ENVIO DOS EMAILS
+export const EMAIL_DELAY = 20;
 export const NODE_MAILER_CREDENTIALS = {
   user: "apfix.mailer@gmail.com",
   pass: "hfl197575",

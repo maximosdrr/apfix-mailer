@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MONGO_URI = exports.EMAIL = exports.NODE_MAILER_CREDENTIALS = exports.TIME = void 0;
-exports.TIME = 30; //INTERVALO EM HORAS DO ENVIO DOS EMAILS
+exports.MONGO_URI = exports.EMAIL = exports.NODE_MAILER_CREDENTIALS = exports.EMAIL_DELAY = exports.TIME = void 0;
+exports.TIME = 1; //INTERVALO EM HORAS DO ENVIO DOS EMAILS
+exports.EMAIL_DELAY = 20;
 exports.NODE_MAILER_CREDENTIALS = {
     user: "apfix.mailer@gmail.com",
     pass: "hfl197575",

@@ -6,7 +6,8 @@ import { Factory } from "./modules/factory/factory.service";
 import { FixerService } from "./modules/fixer/fixer.service";
 import { MailerService } from "./modules/mailer/mailer.service";
 import { MongoConnection } from "./modules/mongo/connection";
-import { WriteError } from "./modules/write_error/write_erro";
+import { WriteError } from "./helpers/write_error";
+import appRoot from "app-root-path";
 
 export async function run() {
   const conn = await new MongoConnection().getConnection();
@@ -25,7 +26,7 @@ export async function run() {
   try {
     bootstrap.startApplication();
   } catch (e) {
-    WriteError(e, `${__dirname.replace("src", "")}/logs/error_log.txt`);
+    WriteError(e, `${appRoot.path}/logs/error_log.txt`);
   }
 }
 
