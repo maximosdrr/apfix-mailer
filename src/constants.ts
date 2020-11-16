@@ -1,8 +1,8 @@
 export const TIME = 168; //INTERVALO EM HORAS DO ENVIO DOS EMAILS
 export const EMAIL_DELAY = 20;
 export const NODE_MAILER_CREDENTIALS = {
-  user: "apfix.mailer@gmail.com",
-  pass: "hfl197575",
+  user: "apfixcondominios@gmail.com",
+  pass: "hkGaW3Gg7cscDVL",
 };
 
 export const EMAIL = {
@@ -18,7 +18,7 @@ export const EMAIL = {
 
   text: "Suas pendencias do condominio foram atualizadas",
   subject: "Notificando as pendências do condominio",
-  from: "noreply@noreply.com",
+  from: "maximosdrr@gmail.com",
 };
 
 export const MONGO_URI = "mongodb://localhost:27017/apfix_dev";
